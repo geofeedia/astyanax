@@ -1,15 +1,6 @@
 package com.netflix.astyanax.cql;
 
-import com.datastax.driver.core.AuthProvider;
-import com.datastax.driver.core.Configuration;
-import com.datastax.driver.core.ConsistencyLevel;
-import com.datastax.driver.core.HostDistance;
-import com.datastax.driver.core.MetricsOptions;
-import com.datastax.driver.core.PlainTextAuthProvider;
-import com.datastax.driver.core.PoolingOptions;
-import com.datastax.driver.core.ProtocolOptions;
-import com.datastax.driver.core.QueryOptions;
-import com.datastax.driver.core.SocketOptions;
+import com.datastax.driver.core.*;
 import com.datastax.driver.core.policies.LoadBalancingPolicy;
 import com.datastax.driver.core.policies.Policies;
 import com.datastax.driver.core.policies.RoundRobinPolicy;
@@ -30,20 +21,28 @@ public class JavaDriverConfigBridge {
 	}
 	
 	public Configuration getJDConfig() {
-		
-		return new Configuration(getPolicies(),
-								 getProtocolOptions(),
-								 getPoolingOptions(),
-								 getSocketOptions(),
-								 getMetricsOptions(),
-								 getQueryOptions());
+		return Configuration.builder()
+				.withPolicies(getPolicies())
+				.withProtocolOptions(getProtocolOptions())
+				.withPoolingOptions(getPoolingOptions())
+				.withSocketOptions(getSocketOptions())
+				.withMetricsOptions(getMetricsOptions())
+				.withQueryOptions(getQueryOptions())
+				.withNettyOptions(getNettyOptions())
+				.withCodecRegistry(getCodecRegistry())
+				.build();
 	}
-	
+
+	private NettyOptions getNettyOptions() {
+		return NettyOptions.DEFAULT_INSTANCE;
+	}
+
+	private CodecRegistry getCodecRegistry() {
+		return CodecRegistry.DEFAULT_INSTANCE;
+	}
+
 	private Policies getPolicies() {
-		return new Policies(getLB(),
-				            Policies.defaultReconnectionPolicy(),
-				            Policies.defaultRetryPolicy(),
-				            Policies.defaultAddressTranslater());
+		return Policies.builder().build();
 	}
 	
 	private LoadBalancingPolicy getLB() {

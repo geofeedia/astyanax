@@ -1,8 +1,11 @@
 package com.netflix.astyanax.cql.retrypolicies;
 
+import com.datastax.driver.core.Cluster;
 import com.datastax.driver.core.ConsistencyLevel;
 import com.datastax.driver.core.Statement;
 import com.datastax.driver.core.WriteType;
+import com.datastax.driver.core.exceptions.DriverException;
+import com.datastax.driver.core.policies.RetryPolicy;
 import com.datastax.driver.core.policies.RetryPolicy.RetryDecision;
 import com.netflix.astyanax.cql.ConsistencyLevelMapping;
 
@@ -21,6 +24,7 @@ public class ChangeConsistencyLevelRetryPolicy extends JavaDriverBasedRetryPolic
 	private boolean retryOnReads = false;
 	private boolean retryOnWrites = false;
 	private boolean retryOnUnavailable = false;
+	private boolean retryOnRequestError = false;
 	
 	// The retry count
 	private int retryCount = 0;
@@ -54,6 +58,12 @@ public class ChangeConsistencyLevelRetryPolicy extends JavaDriverBasedRetryPolic
 		retryOnAllConditions = false;
 		return this;
 	}
+
+	public ChangeConsistencyLevelRetryPolicy retryOnRequestError(boolean condition) {
+		retryOnRequestError = condition;
+		retryOnAllConditions = false;
+		return this;
+	}
 	
 	public ChangeConsistencyLevelRetryPolicy withNumRetries(int retries) {
 		retryCount = retries;
@@ -71,6 +81,16 @@ public class ChangeConsistencyLevelRetryPolicy extends JavaDriverBasedRetryPolic
 	}
 
 	private com.datastax.driver.core.policies.RetryPolicy jdRetry = new com.datastax.driver.core.policies.RetryPolicy() {
+
+		@Override
+		public void init(Cluster cluster) {
+			// TODO RetryPolicy.init
+		}
+
+		@Override
+		public void close() {
+			// TODO RetryPolicy.close
+		}
 
 		@Override
 		public RetryDecision onReadTimeout(Statement query, ConsistencyLevel cl, 
@@ -96,6 +116,13 @@ public class ChangeConsistencyLevelRetryPolicy extends JavaDriverBasedRetryPolic
 
 			boolean shouldRetry = retryOnAllConditions || retryOnUnavailable;
 			return checkRetry(query, cl, shouldRetry);
+		}
+
+		@Override
+		public RetryDecision onRequestError(Statement statement, ConsistencyLevel consistencyLevel,
+											DriverException e, int i) {
+			boolean shouldRetry = retryOnAllConditions || retryOnRequestError;
+			return checkRetry(statement, consistencyLevel, shouldRetry);
 		}
 	};
 

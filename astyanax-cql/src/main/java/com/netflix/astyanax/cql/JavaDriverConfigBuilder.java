@@ -2,14 +2,7 @@ package com.netflix.astyanax.cql;
 
 import java.util.concurrent.TimeUnit;
 
-import com.datastax.driver.core.Configuration;
-import com.datastax.driver.core.ConsistencyLevel;
-import com.datastax.driver.core.HostDistance;
-import com.datastax.driver.core.MetricsOptions;
-import com.datastax.driver.core.PoolingOptions;
-import com.datastax.driver.core.ProtocolOptions;
-import com.datastax.driver.core.QueryOptions;
-import com.datastax.driver.core.SocketOptions;
+import com.datastax.driver.core.*;
 import com.datastax.driver.core.policies.DefaultRetryPolicy;
 import com.datastax.driver.core.policies.ExponentialReconnectionPolicy;
 import com.datastax.driver.core.policies.LoadBalancingPolicy;
@@ -39,9 +32,18 @@ public class JavaDriverConfigBuilder {
     
     // Config for SocketOptions
     private SocketOptions socketOptions = new SocketOptions();
+
+	// Config for NettyOptions
+	private NettyOptions nettyOptions = NettyOptions.DEFAULT_INSTANCE;
+
+	// Config for CodecRegistry
+	private CodecRegistry codecRegistry = CodecRegistry.DEFAULT_INSTANCE;
     
     // Config for MetricsOptions
     private boolean jmxReportingEnabled = true;
+
+	// Config for MetricsOptions
+	private boolean metricsEnabled = true;
     
     // Config for QueryOptions
     private QueryOptions queryOptions = new QueryOptions();
@@ -51,22 +53,34 @@ public class JavaDriverConfigBuilder {
 	}
 	
 	public JavaDriverConnectionPoolConfigurationImpl build() {
+
+		Policies policies = Policies.builder()
+				.withReconnectionPolicy(reconnectionPolicy)
+				.withRetryPolicy(retryPolicy)
+				.withLoadBalancingPolicy(loadBalancingPolicy)
+				.build();
 		
-		Policies policies = new Policies(loadBalancingPolicy, reconnectionPolicy, retryPolicy);
 		ProtocolOptions protocolOptions = (nativeProtocolPort == -1) ? new ProtocolOptions() : new ProtocolOptions(nativeProtocolPort);
 		PoolingOptions poolOptions = poolingOptions;
 		SocketOptions sockOptions = socketOptions;
-		MetricsOptions metricsOptions = new MetricsOptions(jmxReportingEnabled);
+		MetricsOptions metricsOptions = new MetricsOptions(metricsEnabled, jmxReportingEnabled);
 		QueryOptions qOptions = queryOptions;
+		NettyOptions nOptions = nettyOptions;
+		CodecRegistry cRegistry = codecRegistry;
+
+		Configuration configuration = Configuration.builder()
+				.withPolicies(policies)
+				.withProtocolOptions(protocolOptions)
+				.withPoolingOptions(poolOptions)
+				.withSocketOptions(sockOptions)
+				.withMetricsOptions(metricsOptions)
+				.withQueryOptions(qOptions)
+				.withNettyOptions(nOptions)
+				.withCodecRegistry(cRegistry)
+				.build();
 		
-		return new JavaDriverConnectionPoolConfigurationImpl(new Configuration(policies, 
-													 protocolOptions, 
-													 poolOptions, 
-													 sockOptions, 
-													 metricsOptions, 
-													 qOptions));
+		return new JavaDriverConnectionPoolConfigurationImpl(configuration);
 	}
-	
 	
 	public JavaDriverConfigBuilder withLoadBalancingPolicy(LoadBalancingPolicy lbPolicy) {
 		this.loadBalancingPolicy = lbPolicy;
@@ -154,19 +168,34 @@ public class JavaDriverConfigBuilder {
 		 this.jmxReportingEnabled = enabled;
 		 return this;
 	 }
+
+	public JavaDriverConfigBuilder withMetricsEnabled(boolean enabled) {
+		this.metricsEnabled = enabled;
+		return this;
+	}
 	 
-	 public JavaDriverConfigBuilder withConsistencyLevel(ConsistencyLevel consistencyLevel) {
-		 this.queryOptions.setConsistencyLevel(consistencyLevel);
-		 return this;
-	 }
-	 
-	 public JavaDriverConfigBuilder withSerialConsistencyLevel(ConsistencyLevel consistencyLevel) {
-		 this.queryOptions.setSerialConsistencyLevel(consistencyLevel);
-		 return this;
-	 }
-	
-	 public JavaDriverConfigBuilder withFetchSize(int fetchSize) {
-		 this.queryOptions.setFetchSize(fetchSize);
-		 return this;
-	 }
+	public JavaDriverConfigBuilder withConsistencyLevel(ConsistencyLevel consistencyLevel) {
+		this.queryOptions.setConsistencyLevel(consistencyLevel);
+		return this;
+	}
+
+	public JavaDriverConfigBuilder withSerialConsistencyLevel(ConsistencyLevel consistencyLevel) {
+		this.queryOptions.setSerialConsistencyLevel(consistencyLevel);
+		return this;
+	}
+
+	public JavaDriverConfigBuilder withFetchSize(int fetchSize) {
+		this.queryOptions.setFetchSize(fetchSize);
+		return this;
+	}
+
+	public JavaDriverConfigBuilder withNettyOptions(NettyOptions nettyOptions) {
+		this.nettyOptions = nettyOptions;
+		return this;
+	}
+
+	public JavaDriverConfigBuilder withCodecRegistry(CodecRegistry codecRegistry) {
+		this.codecRegistry = codecRegistry;
+		return this;
+	}
 }

@@ -145,7 +145,7 @@ public class CqlColumnImpl<C> implements Column<C> {
 
 	@Override
 	public Date getDateValue() {
-		return (isBlob) ? DateSerializer.get().fromByteBuffer(row.getBytes(index)) : row.getDate(index);
+		return (isBlob) ? DateSerializer.get().fromByteBuffer(row.getBytes(index)) : row.getTimestamp(index);
 	}
 
 	@Override

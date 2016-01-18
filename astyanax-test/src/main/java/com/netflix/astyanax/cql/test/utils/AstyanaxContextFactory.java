@@ -8,14 +8,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
+import com.datastax.driver.core.*;
 import org.apache.log4j.PropertyConfigurator;
 
-import com.datastax.driver.core.Configuration;
-import com.datastax.driver.core.MetricsOptions;
-import com.datastax.driver.core.PoolingOptions;
-import com.datastax.driver.core.ProtocolOptions;
-import com.datastax.driver.core.QueryOptions;
-import com.datastax.driver.core.SocketOptions;
 import com.datastax.driver.core.policies.Policies;
 import com.google.common.base.Supplier;
 import com.netflix.astyanax.AstyanaxContext;
@@ -159,12 +154,16 @@ public class AstyanaxContextFactory {
     	
     	ProtocolOptions protocolOptions = new ProtocolOptions(9042);
 		
-		Configuration jdConfig = new Configuration(new Policies(),
-	             protocolOptions,
-	             new PoolingOptions(),
-	             new SocketOptions(),
-	             new MetricsOptions(),
-	             new QueryOptions());
+		Configuration jdConfig = Configuration.builder()
+				.withPolicies(Policies.builder().build())
+				.withProtocolOptions(protocolOptions)
+				.withPoolingOptions(new PoolingOptions())
+				.withSocketOptions(new SocketOptions())
+				.withMetricsOptions(new MetricsOptions())
+				.withQueryOptions(new QueryOptions())
+				.withNettyOptions(NettyOptions.DEFAULT_INSTANCE)
+				.withCodecRegistry(CodecRegistry.DEFAULT_INSTANCE)
+				.build();
 
 		AstyanaxContext<Keyspace> context = new AstyanaxContext.Builder()
 		.forKeyspace(keyspaceName)
