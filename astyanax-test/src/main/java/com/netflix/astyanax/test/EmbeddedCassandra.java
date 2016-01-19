@@ -113,20 +113,17 @@ public class EmbeddedCassandra {
     }
 
     public void start()  {
-        Future<Object> future = service.submit(new Callable<Object>(){
-                @Override
-                public Object call() throws Exception
-                {
-                    try {
-                        cassandra.start();
-                    }
-                    catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                    return null;
+        Future<?> future = service.submit(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    cassandra.start();
+                }
+                catch (Exception e) {
+                    e.printStackTrace();
                 }
             }
-        );
+        });
         
         try {
             future.get();

@@ -32,7 +32,6 @@ import com.netflix.astyanax.thrift.ThriftFamilyFactory;
  * @author elandau
  *
  */
-@Ignore
 public class LockRecipeTest {
     private static ColumnFamily<String, String> LOCK_CF_LONG   = 
             ColumnFamily.newColumnFamily("LockCfLong", StringSerializer.get(), StringSerializer.get(), LongSerializer.get());

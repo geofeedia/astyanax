@@ -33,7 +33,7 @@ trickle_fsync: false
 trickle_fsync_interval_in_kb: 10240
 storage_port: $STORAGE_PORT$
 listen_address: 127.0.0.1
-start_native_transport: false
+start_native_transport: true
 native_transport_port: 9260
 start_rpc: true
 rpc_address: 127.0.0.1
