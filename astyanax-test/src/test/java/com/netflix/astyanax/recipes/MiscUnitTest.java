@@ -1,8 +1,6 @@
 package com.netflix.astyanax.recipes;
 
 import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -21,7 +19,6 @@ import com.google.common.base.Function;
 import com.google.common.base.Stopwatch;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
 import com.netflix.astyanax.AstyanaxContext;
 import com.netflix.astyanax.ColumnListMutation;
 import com.netflix.astyanax.Keyspace;
@@ -38,8 +35,6 @@ import com.netflix.astyanax.model.ColumnFamily;
 import com.netflix.astyanax.model.ColumnList;
 import com.netflix.astyanax.model.ConsistencyLevel;
 import com.netflix.astyanax.model.Row;
-import com.netflix.astyanax.partitioner.Murmur3Partitioner;
-import com.netflix.astyanax.recipes.UUIDStringSupplier;
 import com.netflix.astyanax.recipes.functions.ColumnCounterFunction;
 import com.netflix.astyanax.recipes.functions.RowCopierFunction;
 import com.netflix.astyanax.recipes.functions.RowCounterFunction;
@@ -959,7 +954,7 @@ public class MiscUnitTest {
                 .build();
         
         try {
-            Stopwatch sw = new Stopwatch().start();
+            Stopwatch sw = Stopwatch.createStarted();
             boolean result = reader.call();
             long runtimeMillis = sw.stop().elapsed(TimeUnit.MILLISECONDS);
 

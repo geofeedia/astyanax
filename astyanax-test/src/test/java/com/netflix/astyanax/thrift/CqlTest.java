@@ -244,8 +244,9 @@ public class CqlTest {
                 .withCql("SELECT * FROM users;").execute().getResult()
                 .getRows(User_CF);
 
+        // TODO validate multicell
         MapSerializer<String, String> mapSerializer = new MapSerializer<String, String>(
-                UTF8Type.instance, UTF8Type.instance);
+                UTF8Type.instance, UTF8Type.instance, false);
 
         for (Row<String, String> row : rows) {
             Log.info(row.getKey());

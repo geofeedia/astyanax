@@ -6,8 +6,6 @@ import java.util.Set;
 import org.apache.cassandra.db.marshal.AbstractType;
 import org.apache.cassandra.db.marshal.SetType;
 
-import com.netflix.astyanax.serializers.AbstractSerializer;
-
 /**
  * Serializer implementation for generic sets.
  * 
@@ -22,9 +20,10 @@ public class SetSerializer<T> extends AbstractSerializer<Set<T>> {
 
     /**
      * @param elements
+     * @param isMultiCell
      */
-    public SetSerializer(AbstractType<T> elements) {
-        mySet = SetType.getInstance(elements);
+    public SetSerializer(AbstractType<T> elements, boolean isMultiCell) {
+        mySet = SetType.getInstance(elements, isMultiCell);
     }
 
     @Override

@@ -6,8 +6,6 @@ import java.util.Map;
 import org.apache.cassandra.db.marshal.AbstractType;
 import org.apache.cassandra.db.marshal.MapType;
 
-import com.netflix.astyanax.serializers.AbstractSerializer;
-
 /**
  * Serializer implementation for generic maps.
  * 
@@ -25,9 +23,10 @@ public class MapSerializer<K, V> extends AbstractSerializer<Map<K, V>> {
     /**
      * @param key
      * @param value
+     * @param isMultiCell
      */
-    public MapSerializer(AbstractType<K> key, AbstractType<V> value) {
-        myMap = MapType.getInstance(key, value);
+    public MapSerializer(AbstractType<K> key, AbstractType<V> value, boolean isMultiCell) {
+        myMap = MapType.getInstance(key, value, isMultiCell);
     }
 
     @Override

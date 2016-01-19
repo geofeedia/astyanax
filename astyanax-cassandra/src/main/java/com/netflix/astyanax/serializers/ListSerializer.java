@@ -6,8 +6,6 @@ import java.util.List;
 import org.apache.cassandra.db.marshal.AbstractType;
 import org.apache.cassandra.db.marshal.ListType;
 
-import com.netflix.astyanax.serializers.AbstractSerializer;
-
 /**
  * Serializer implementation for generic lists.
  * 
@@ -22,9 +20,10 @@ public class ListSerializer<T> extends AbstractSerializer<List<T>> {
 
     /**
      * @param elements
+     * @param isMultiCell
      */
-    public ListSerializer(AbstractType<T> elements) {
-        myList = ListType.getInstance(elements);
+    public ListSerializer(AbstractType<T> elements, boolean isMultiCell) {
+        myList = ListType.getInstance(elements, isMultiCell);
     }
 
     @Override

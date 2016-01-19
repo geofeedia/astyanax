@@ -1,5 +1,6 @@
 # Cassandra storage config YAML
 cluster_name: '$CLUSTER$'
+hints_directory: $DIR$/data/hints
 initial_token: 0
 auto_bootstrap: false
 hinted_handoff_enabled: false
@@ -28,7 +29,6 @@ reduce_cache_sizes_at: 0.85
 reduce_cache_capacity_to: 0.6
 concurrent_reads: 32
 concurrent_writes: 32
-memtable_flush_queue_size: 4
 storage_port: $STORAGE_PORT$
 listen_address: 127.0.0.1
 rpc_address: 127.0.0.1
@@ -39,9 +39,7 @@ thrift_max_message_length_in_mb: 16
 incremental_backups: false
 snapshot_before_compaction: false
 column_index_size_in_kb: 64
-in_memory_compaction_limit_in_mb: 64
 compaction_throughput_mb_per_sec: 16
-compaction_preheat_key_cache: true
 endpoint_snitch: org.apache.cassandra.locator.SimpleSnitch
 dynamic_snitch: true
 dynamic_snitch_update_interval_in_ms: 100 

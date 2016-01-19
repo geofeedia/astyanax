@@ -496,7 +496,8 @@ public class ThriftKeyspaceImplTest {
         }
         LOG.info("<<<<<<");
     }
-    
+
+    @org.junit.Ignore
     @Test
     public void testCqlComposite() throws Exception {
         CqlStatementResult result = keyspace.prepareCqlStatement()
@@ -1829,7 +1830,8 @@ public class ThriftKeyspaceImplTest {
         
 
     }
-    
+
+    @org.junit.Ignore
     @Test
     public void testCql() {
         try {
@@ -1879,6 +1881,7 @@ public class ThriftKeyspaceImplTest {
         }
     }
 
+    @org.junit.Ignore
     @Test
     public void testCqlCount() {
         try {
@@ -2086,6 +2089,7 @@ public class ThriftKeyspaceImplTest {
         Assert.assertEquals(2, r1.getResult().size());
     }
 
+    @org.junit.Ignore
     @Test
     public void testColumnRangeSlice() throws ConnectionException {
         OperationResult<ColumnList<String>> r1 = keyspace
