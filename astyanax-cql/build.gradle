@@ -8,7 +8,7 @@ dependencies {
         transitive = false
     }
 
-    compile "io.netty:netty:$nettyVersion"
+    compile "io.netty:netty-handler:$nettyVersion"
     compile "com.google.guava:guava:$guavaVersion"
     compile "net.jpountz.lz4:lz4:$lz4Version"
     compile "com.codahale.metrics:metrics-core:$metricCoreVersion"

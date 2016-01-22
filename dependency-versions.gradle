@@ -18,7 +18,7 @@ ext {
  jacksonVersion = "1.9.2"
  snappyVersion = "1.0.4.1"
  jpaVersion = "1.0"
- nettyVersion = "3.10.5.Final"
+ nettyVersion = "4.0.33.Final"
  commonsIOVersion = "2.1"
  javaDriverVersion = "3.0.0-rc1"
  lz4Version = "1.2.0"
